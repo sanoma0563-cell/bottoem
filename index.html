@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<head> 
+<meta charset="utf-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
 <title>無料登録ページ</title>
 
 <style>
@@ -56,6 +56,9 @@
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
   }
 
   .msg {
@@ -71,40 +74,39 @@
 
 <div class="main-wrap">
 
-  <!-- ▼ ここにあなたの縦長画像を置く（比率は自由） -->
-  <img src="YOUR_VERTICAL_IMAGE_URL" class="hero-img" alt="紹介画像">
+  <!-- ▼ あなたの添付画像を表示 -->
+  <img src="https://sanoma0563-cell.github.io/bottoem/Travel.png" class="hero-img" alt="広告">
 
   <div class="form-box">
 
     <div class="title">▼ メールアドレスを入力して参加 ▼</div>
 
-    <form id="leadForm" action="ACTION_URL" method="POST">
-
+    <!-- ▼ メール送信フォーム（Formspree の URL を入れる） -->
+    <form id="leadForm" action="YOUR_FORMSPREE_URL" method="POST">
       <input id="email" type="email" name="email" placeholder="例：sample@gmail.com" required>
-
-      <button type="submit" class="submit-btn">無料で参加する</button>
-
       <p id="msg" class="msg"></p>
-
     </form>
+
+    <!-- ▼ ボタン：押した瞬間 Jimdo へ移動 -->
+    <a href="https://sanoconsultingengineers.jimdofree.com/" class="submit-btn">
+      参加する
+    </a>
 
   </div>
 </div>
 
-
 <script>
+  // 入力されたメールを Formspree へ自動送信（ページ遷移なし）
   const form = document.getElementById("leadForm");
   const emailInput = document.getElementById("email");
   const msg = document.getElementById("msg");
 
-  form.addEventListener("submit", async function(e){
-    e.preventDefault();
+  emailInput.addEventListener("change", async function () {
     msg.textContent = "";
-    msg.style.color = "#555";
-
     const email = emailInput.value.trim();
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(!email || !re.test(email)){
+
+    if (!email || !re.test(email)) {
       msg.textContent = "正しいメールアドレスを入力してください。";
       msg.style.color = "#c33";
       return;
@@ -118,12 +120,11 @@
         headers: { "Accept": "application/json" }
       });
 
-      if(res.ok){
-        msg.textContent = "登録が完了しました。ありがとうございます！";
+      if (res.ok) {
+        msg.textContent = "メールを送信しました！";
         msg.style.color = "green";
-        form.reset();
       } else {
-        msg.textContent = "送信に失敗しました。時間をおいて再度お試しください。";
+        msg.textContent = "送信できませんでした。";
         msg.style.color = "#c33";
       }
     } catch {
