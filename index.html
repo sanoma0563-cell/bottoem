@@ -68,8 +68,16 @@ input[type="email"] {
     <div class="title">▼ メールアドレスを入力して参加 ▼</div>
 
     <form id="leadForm" novalidate>
-      <input id="email" type="email" name="email" placeholder="例：sample@gmail.com" required>
-      <button id="submitBtn" type="submit" class="submit-btn">参加する</button>
+      <input
+        id="email"
+        type="email"
+        name="email"
+        placeholder="例：sample@gmail.com"
+        required
+      >
+      <button id="submitBtn" type="submit" class="submit-btn">
+        参加する
+      </button>
       <p id="msg" class="msg"></p>
     </form>
   </div>
@@ -81,17 +89,21 @@ const emailInput = document.getElementById("email");
 const btn = document.getElementById("submitBtn");
 const msg = document.getElementById("msg");
 
-// ★ 必ず自分の Formspree URL に変更
-const FORMSPREE_URL = "https://forms.gle/JpSrEqQoXHjjxiM7A";
+/*
+ ★★★ ここだけ必ず自分の Formspree Endpoint に変更 ★★★
+ 例：https://formspree.io/f/mabcdxyz
+*/
+const FORMSPREE_URL = "https://formspree.io/f/xaqwlarj";
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   msg.textContent = "";
+  msg.style.color = "";
 
   const email = emailInput.value.trim();
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // メールチェック
+  // メールアドレスチェック
   if (!re.test(email)) {
     msg.textContent = "正しいメールアドレスを入力してください";
     msg.style.color = "#c33";
@@ -105,31 +117,33 @@ form.addEventListener("submit", async (e) => {
   try {
     const res = await fetch(FORMSPREE_URL, {
       method: "POST",
-      body: new FormData(form),
       headers: {
-        "Accept": "application/json"
-      }
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email
+      })
     });
 
     if (res.ok) {
       msg.textContent = "登録完了！ありがとうございます";
       msg.style.color = "green";
 
-      // 成功後に遷移
+      // 成功後の遷移先
       setTimeout(() => {
         location.href = "https://sanoconsultingengineers.jimdofree.com/";
-      }, 800);
+      }, 900);
 
     } else {
-      const data = await res.json();
-      msg.textContent = data.error || "送信に失敗しました";
+      msg.textContent = "送信に失敗しました。時間をおいて再度お試しください。";
       msg.style.color = "#c33";
       btn.disabled = false;
       btn.textContent = "参加する";
     }
 
   } catch (err) {
-    msg.textContent = "通信エラーが発生しました";
+    msg.textContent = "通信エラーが発生しました。ネット環境をご確認ください。";
     msg.style.color = "#c33";
     btn.disabled = false;
     btn.textContent = "参加する";
